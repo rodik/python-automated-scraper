@@ -1,6 +1,7 @@
 {
 	"name": "Python scraper",
 	"build": {
+		"context": "/workspaces/dbt-snowflake/",
 		"dockerfile": "Dockerfile",
 		"args": { "VARIANT": "3.9-slim" }
 	},

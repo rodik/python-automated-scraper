@@ -1,0 +1,21 @@
+{
+	"name": "Python scraper",
+	"build": {
+		"dockerfile": "Dockerfile",
+		"args": { "VARIANT": "3.9-slim" }
+	},
+	
+	// Set *default* container specific settings.json values on container create. 
+	"settings": {},
+
+	// Add the IDs of extensions you want installed when the container is created.
+	// Note that some extensions may not work in Alpine Linux. See https://aka.ms/vscode-remote/linux.
+	"extensions": [],
+
+	"containerEnv": {		
+		"SNOWFLAKE_ACCOUNT": "${localEnv:BOOST_SNOWFLAKE_ACCOUNT}",
+		"SNOWFLAKE_USERNAME": "${localEnv:BOOST_SNOWFLAKE_USER}",
+		"SNOWFLAKE_PASSWORD": "${localEnv:BOOST_SNOWFLAKE_PASSWORD}",
+		"SNOWFLAKE_WAREHOUSE": "${localEnv:BOOST_SNOWFLAKE_WAREHOUSE}"
+	}
+}

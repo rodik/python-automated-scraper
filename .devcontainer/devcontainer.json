@@ -17,8 +17,9 @@
 		"ms-python.python"
 	],
 
+
 	// Passing environment variables from local machine to dev container
-	"containerEnv": {		
-		"MY_CONTAINER_VARIABLE": "${localEnv:TEMP}"
+	"containerEnv": {
+		"GDRIVE_API_CREDENTIALS": "${localEnv:GDRIVE_API_CREDENTIALS}"
 	}
 }

@@ -15,7 +15,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       
-      - name: Print 
+      - name: Print status
         run: |
           git status
+          
+      - name: Print diff
+        run: |
           git diff
+          
+      - name: Print ls
+        run: |
+          ls

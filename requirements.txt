@@ -1,3 +1,5 @@
 # Generated on: Python 3.9.10
+requests
 beautifulsoup4
 pandas
+jsonpickle

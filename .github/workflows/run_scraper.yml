@@ -19,7 +19,6 @@ jobs:
         run: |
           git status
           
-          
       - name: Print diff
         run: |
           git diff

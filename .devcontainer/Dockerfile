@@ -18,6 +18,6 @@ RUN apt update \
     && apt purge -y --auto-remove \
     && rm -rf /var/lib/apt/lists/*
 
-RUN wget https://github.com/cli/cli/releases/download/v2.4.0/gh_2.4.0_linux_amd64.deb \
+RUN wget https://github.com/cli/cli/releases/download/v2.5.1/gh_2.5.1_linux_amd64.deb \
     && dpkg -i gh_*_linux_amd64.deb \
     && rm -r gh_*_linux_amd64.deb

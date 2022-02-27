@@ -12,23 +12,15 @@ env:
   GDRIVE_API_CREDENTIALS: ${{ secrets.GDRIVE_API_CREDENTIALS }}
 
 jobs:
-  Info:
-    name: Info job
+  RUN:
+    name: Scrape job
     runs-on: ubuntu-latest
     steps:
       # checkout repository
       - name: Checkout
         uses: actions/checkout@v2
       
-      - name: Print status
-        run: |
-          git status
-
       # Run scraper
       - name: Scraper
         run: |
-          python /python/scraper.py
-          
-      - name: Print ls
-        run: |
-          ls
+          python python/scraper.py

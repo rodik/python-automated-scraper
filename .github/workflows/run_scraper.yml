@@ -1,27 +1,33 @@
 name: "Run workflow"
 
 on:
-  pull_request:
-    branches: 
-      - main
+  # Schedule: At 15:00 UTC on every day of month:
+  schedule:
+    - cron: '0 15 * * *'
 
+  # Enable manual run for this workflow:
+  workflow_dispatch:
+
+env:
+  GDRIVE_API_CREDENTIALS: ${{ secrets.GDRIVE_API_CREDENTIALS }}
 
 jobs:
   Info:
     name: Info job
     runs-on: ubuntu-latest
     steps:
-
+      # checkout repository
       - name: Checkout
         uses: actions/checkout@v2
       
       - name: Print status
         run: |
           git status
-          
-      - name: Print diff
+
+      # Run scraper
+      - name: Scraper
         run: |
-          git diff
+          python /python/scraper.py
           
       - name: Print ls
         run: |

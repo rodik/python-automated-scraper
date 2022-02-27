@@ -17,10 +17,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # checkout repository
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
       
+      # Setup Python
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+
+      # Install requirements
+      - run: pip install -r requirements.txt
+
       # Run scraper
-      - name: Scraper
-        run: |
+      - run: |
           python python/scraper.py

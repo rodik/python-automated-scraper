@@ -1,4 +1,4 @@
-name: "Run workflow"
+name: "Scraper workflow"
 
 on:
   # Schedule: At 15:00 UTC on every day of month:
@@ -16,6 +16,7 @@ jobs:
     name: Scrape job
     runs-on: ubuntu-latest
     steps:
+    
       # checkout repository
       - uses: actions/checkout@v2
       
@@ -26,7 +27,8 @@ jobs:
           cache: 'pip'
 
       # Install requirements
-      - run: pip install -r requirements.txt
+      - run: |
+          pip install -r requirements.txt
 
       # Run scraper
       - run: |

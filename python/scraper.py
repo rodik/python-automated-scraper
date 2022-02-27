@@ -11,6 +11,8 @@ import jsonpickle
 import pygsheets
 
 jsonpickle.set_encoder_options('json', indent=4, ensure_ascii=False)
+pd.set_option('display.max_columns', 4)
+
 initial_load = False
 
 # Google sheet (database)

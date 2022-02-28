@@ -36,6 +36,12 @@ Start by creating a GitHub account if you don't have one.
     - Docker Desktop
     - Visual Studio Code (VS Code)
     - Remote Development [Extension](https://code.visualstudio.com/docs/editor/extension-marketplace#_browse-for-extensions) pack
+1. Authorize your scraper application to edit destination spreadsheet. Follow the instructions [here](https://pygsheets.readthedocs.io/en/latest/authorization.html).
+    - Use second option - Service Account
+    - Download your `.json` file - the content will be passed to the development container using an Environment variable
+    - Note the generated email associated with created Service Account. It is also available in downloaded config.json file under `client_email` key.
+1. Create a Environment variable named `GDRIVE_API_CREDENTIALS` on your local machine and set the content of downloaded `.json` file from step 3 as value of this variable. There is a shell [script](.devcontainer/set_github_repo_secrets.sh) to help you do it using bash or Powershell.
+    - Now your scraper can access the spreadsheet from your VS Code development container.
 1. Open VS Code
     - Open the Command Palette (F1 key *or* Ctrl+Shift+P *or* View -> Command Palette)
     - Run `Remote-Containers: Clone Repository in Container Volume ...`
@@ -45,10 +51,21 @@ Start by creating a GitHub account if you don't have one.
     - Your repo will be ready when the container is built
 1. Create [Google spreadsheet](https://docs.google.com/spreadsheets/u/0/?tgif=d) in your Drive folder as a destination for scraped data
     - Name it `Python to Sheets`
-1. Authorize your scraper application to edit destination spreadsheet. Follow the instructions [here](https://pygsheets.readthedocs.io/en/latest/authorization.html).
-    - Use second option - Service Account
-    - Download your `.json` file - the content will be passed to the development container using an Environment variable
-    - Note the generated email associated with created Service Account. It is also available in downloaded config.json file under `client_email` key.
+    - Rename the worksheet to `Najave`
+    - If you choose different names, update the names in [scraper.py](python/scraper.py)
 1. In your `Python to Sheets` share the spreadsheet with Service Account by adding the generated email as Editor
 ![share screenshot](img/share-spreadsheet-with-service-acc.png?raw=true)
-1. In your forked Github repository create new Action secret named `GDRIVE_API_CREDENTIALS` and copy the content of downloaded `.json` file from step 5 as **Value** for this secret.
+1. In your forked Github repository create new Action secret named `GDRIVE_API_CREDENTIALS` and copy the content of downloaded `.json` file from step 3 as **Value** for this secret. 
+    - Now your scraper can access the spreadsheet from a Github Workflow.
+
+# Usage instructions
+
+1. Scraper can identify a blank worksheet and knows when to perform an "initial load run".
+1. After the initial run, the scraper does incremental loads (appends only new data to bottom of worksheet table).
+1. Do **NOT** edit the destination worksheet manually. Create a new worksheet and reference scraped data in a new table if you want to analyze it in the same spreadsheet. There you can create additional transformations, add columns, apply formats, etc.
+1. Edit cron [schedule](.github/workflows/run_scraper.yml) if needed. Use [this](https://crontab.guru/#0_15_*_*_*) if new to cron schedule expressions.
+``` yaml
+# At 15:00 UTC on every day of month:
+  schedule:
+    - cron: '0 15 * * *'
+```

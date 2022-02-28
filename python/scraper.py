@@ -15,14 +15,7 @@ pd.set_option('display.max_columns', 4)
 pd.set_option('display.width', 400)
 
 
-initial_load = False
 
-# Google sheet (database)
-gc = pygsheets.authorize(service_account_env_var = 'GDRIVE_API_CREDENTIALS')
-gsheet = gc.open('Python to Sheets') # get using name
-# gsheet = gc.open_by_key('14-b6PRiyY4lb72n3_vqZAvFsm8ybwi4Bgnc89AX5Zz8') # get using google sheet key (preferred)
-gworksheet = gsheet.worksheet_by_title('Najave')
-# gworksheet = gsheet.worksheet_by_title('test')
 
 class NewsItem:
     def __init__(self, title, url, date):
@@ -94,61 +87,87 @@ def gsheet_get_table(g_worksheet) -> pd.DataFrame:
     # print(df)
     return df
 
-# START
-last_existing_news_item_id = ''
+def read_database_table(gworksheet):
+    last_existing_news_item_id = ''
+    # read google spreadsheet
+    existing_spreadsheet_data = gsheet_get_table(gworksheet)
+    # get number of rows in table
+    existing_row_count = existing_spreadsheet_data.shape[0]
+
+    # if table is empty prepare
+    if existing_row_count == 0:
+        print("Initial run!")
+        # insert header row
+        header_row = ["Naslov", "Datum", "URL", "Sadrzaj"]
+        gworksheet.update_row(1, header_row)
+        # make it bold
+        a1_cell = gworksheet.cell('A1')
+        a1_cell.set_text_format('bold', True)
+        a1_cell.color = (0.8,0.8,0.8,0.1)
+        pygsheets.DataRange('B1','D1', worksheet=gworksheet).apply_format(a1_cell)
+
+    else:
+        print("Found " + str(existing_row_count) + " rows")
+        # convert the 'Datum' column to datetime format
+        existing_spreadsheet_data['Datum']= pd.to_datetime(existing_spreadsheet_data['Datum'])
+        existing_spreadsheet_data = existing_spreadsheet_data.sort_values(by=['Datum'])
+        # get url from last saved record
+        last_existing_news_item_id = existing_spreadsheet_data['URL'].iloc[-1]
+        print("Latest row is:")
+        print(existing_spreadsheet_data.iloc[-1:])
+    
+    return dict({
+        'row_count': existing_row_count,
+        'last_row_id': last_existing_news_item_id
+    })
+
+def save_new_data(new_items_list, previous_row_count):
+    # convert to DataFrame
+    new_records_count = len(new_items_list)
+
+    # If new records are found, append them to bottom of existing table
+    if new_records_count > 0:
+        # construct dataframe from list (better ways to do this certainly exist)
+        items_df = pd.read_json(jsonpickle.encode(new_items_list, unpicklable=False))
+        # fix data types
+        items_df['date']= pd.to_datetime(items_df['date'])
+        # sort dataframe
+        items_df = items_df.sort_values(by=['date'])
+
+        print("Writing new rows: " + str(new_records_count))
+        # write new rows below last existing row
+        new_data_range_start = "A" + str(previous_row_count + 2)
+        gworksheet.set_dataframe(items_df, new_data_range_start, copy_head=False)
+    else:
+        print("No new rows found!")
+
+    # print(items_df)
+
+### START
+
+## Google sheet (database) setup
+gc = pygsheets.authorize(service_account_env_var = 'GDRIVE_API_CREDENTIALS')
+gsheet = gc.open('Python to Sheets') # get using name
+# gsheet = gc.open_by_key('14-b6PRiyY4lb72n3_vqZAvFsm8ybwi4Bgnc89AX5Zz8') # get using google sheet key (preferred)
+gworksheet = gsheet.worksheet_by_title('Najave')
+
+## global vars
 base_url = 'https://vlada.gov.hr'
 najave_base_url = base_url + '/vijesti/8?trazi=1&tip=3&tip2=&tema=&profil=&datumod=&datumdo=&pojam=#pojam&page=#pgNum'
 
 
-existing_spreadsheet_data = gsheet_get_table(gworksheet)
+## Read existing data from google sheet
+db_table = read_database_table(gworksheet)
 
-existing_row_count = existing_spreadsheet_data.shape[0]
-
-if existing_row_count == 0:
-    print("Initial run!")
-    initial_load = True
-    # insert header row
-    header_row = ["Naslov", "Datum", "URL", "Sadrzaj"]
-    gworksheet.update_row(1, header_row)
-    # make it bold
-    a1_cell = gworksheet.cell('A1')
-    a1_cell.set_text_format('bold', True)
-    a1_cell.color = (0.8,0.8,0.8,0.1)
-    pygsheets.DataRange('B1','D1', worksheet=gworksheet).apply_format(a1_cell)
-
-else:
-    print("Found " + str(existing_row_count) + " rows")
-    # convert the 'Datum' column to datetime format
-    existing_spreadsheet_data['Datum']= pd.to_datetime(existing_spreadsheet_data['Datum'])
-    existing_spreadsheet_data = existing_spreadsheet_data.sort_values(by=['Datum'])
-    # get url from last saved record
-    last_existing_news_item_id = existing_spreadsheet_data['URL'].iloc[-1]
-    print("Latest row is:")
-    print(existing_spreadsheet_data.iloc[-1:])
+## Scrape new data from source
 
 # get headers as list
-najave_list = get_news_item_headers(najave_base_url, "sjednica", last_existing_news_item_id)
-
-# print(jsonpickle.encode(najave_list, unpicklable=False))
-
-
+najave_list = get_news_item_headers(najave_base_url, "sjednica", db_table["last_row_id"])
+# get body for each header
 for n in najave_list:
     n.full_text = get_news_item_body(n.url) # scrape content
 
-# convert to DataFrame
-new_records_count = len(najave_list)
+# print(jsonpickle.encode(najave_list, unpicklable=False))
 
-if new_records_count > 0:
-    najave_df = pd.read_json(jsonpickle.encode(najave_list, unpicklable=False))
-    najave_df['date']= pd.to_datetime(najave_df['date'])
-    najave_df = najave_df.sort_values(by=['date'])
-    print("Writing new rows: " + str(new_records_count))
-    new_data_range_start = "A" + str(existing_row_count + 2)
-    gworksheet.set_dataframe(najave_df, new_data_range_start, copy_head=False)
-else:
-    print("No new rows found!")
-
-# print(najave_df)
-
-## Zatvorene sjednice
-
+## Write new rows to google sheet
+save_new_data(najave_list, db_table["row_count"])

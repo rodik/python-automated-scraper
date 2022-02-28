@@ -35,7 +35,7 @@ def get_news_item_headers(url_template, pojam, stop_url):
     parsed_najave = list()
     print("Reading headers from page ...")
 
-    for page_num in range(1, 3):
+    for page_num in range(1, 10): # increase range to read more data (on initial load)
 
         # build url
         najave_url = url_template.replace("#pojam", pojam).replace("#pgNum", str(page_num))

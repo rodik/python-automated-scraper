@@ -16,20 +16,20 @@ jobs:
     name: Scrape job
     runs-on: ubuntu-latest
     steps:
-    
-      # checkout repository
-      - uses: actions/checkout@v2
+
+      - name: Checkout repo
+        uses: actions/checkout@v2
       
-      # Setup Python
-      - uses: actions/setup-python@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
         with:
           python-version: '3.9'
           cache: 'pip'
 
-      # Install requirements
-      - run: |
+      - name: Install requirements
+        run: |
           pip install -r requirements.txt
 
-      # Run scraper
-      - run: |
+      - name: Run scraper
+        run: |
           python python/scraper.py

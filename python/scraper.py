@@ -66,6 +66,7 @@ def get_news_item_headers(url_template, pojam, stop_url):
 
             # if stop condition reached
             if item.url == stop_url:
+                print("Reached existing data, stopping search")
                 stop_outer_loop = True
                 break
 

@@ -11,7 +11,7 @@ Set-Variable -Name "CREDENTIALS_JSON" -Value '
 '
 
 # set Environment variable on local machine
-[System.Environment]::SetEnvironmentVariable('GDRIVE_API_CREDENTIALS', $CREDENTIALS_JSON)
+[System.Environment]::SetEnvironmentVariable('GDRIVE_API_CREDENTIALS', $CREDENTIALS_JSON, [System.EnvironmentVariableTarget]::User)
 
 # check
 $env:GDRIVE_API_CREDENTIALS

@@ -62,7 +62,7 @@ Start by creating a GitHub account if you don't have one.
 
 # Usage instructions
 
-1. Scraper can identify a blank worksheet and knows when to perform an "initial load run".
+1. Scraper can identify a blank worksheet and knows when to perform _initial load_ run.
 1. After the initial run, the scraper does incremental loads (appends only new data to bottom of worksheet table).
 1. Do **NOT** edit the destination worksheet manually. Create a new worksheet and reference scraped data in a new table if you want to analyze it in the same spreadsheet. There you can create additional transformations, add columns, apply formats, etc.
 1. Edit cron [schedule](.github/workflows/run_scraper.yml) if needed. Use [this](https://crontab.guru/#0_15_*_*_*) if new to cron schedule expressions.

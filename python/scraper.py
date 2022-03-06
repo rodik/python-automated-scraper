@@ -13,6 +13,7 @@ import pygsheets
 jsonpickle.set_encoder_options('json', indent=4, ensure_ascii=False)
 pd.set_option('display.max_columns', 4)
 pd.set_option('display.width', 400)
+MAX_PAGES = 10 # increase range to read more data (on initial load)
 
 
 
@@ -30,7 +31,7 @@ def get_news_item_headers(url_template, pojam, stop_url):
     parsed_najave = list()
     print("Reading headers from page ...")
 
-    for page_num in range(1, 10): # increase range to read more data (on initial load)
+    for page_num in range(1, MAX_PAGES): 
 
         # build url
         najave_url = url_template.replace("#pojam", pojam).replace("#pgNum", str(page_num))

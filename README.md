@@ -40,7 +40,7 @@ Start by creating a GitHub account if you don't have one.
     - Use second option - Service Account
     - Download your `.json` file - the content will be passed to the development container using an Environment variable
     - Note the generated email associated with created Service Account. It is also available in downloaded config.json file under `client_email` key.
-1. Create a Environment variable named `GDRIVE_API_CREDENTIALS` on your local machine and set the content of downloaded `.json` file from step 3 as value of this variable. There is a shell [script](.devcontainer/set_github_repo_secrets.sh) to help you do it using bash or Powershell.
+1. Create a Environment variable named `GDRIVE_API_CREDENTIALS` on your local machine and set the content of downloaded `.json` file from step 3 as value of this variable. There is a shell [script](.devcontainer/set_ubuntu_env_var.sh) to help you do it using bash and Powershell [script](.devcontainer/set_windows_env_var.ps1) for Windows.
     - Now your scraper can access the spreadsheet from your VS Code development container.
 1. Open VS Code
     - Open the Command Palette (F1 key *or* Ctrl+Shift+P *or* View -> Command Palette)
@@ -54,6 +54,7 @@ Start by creating a GitHub account if you don't have one.
     - Rename the worksheet to `Najave`
     - If you choose different names, update the names in [scraper.py](python/scraper.py)
 1. In your `Python to Sheets` share the spreadsheet with Service Account by adding the generated email as Editor
+
 ![share screenshot](img/share-spreadsheet-with-service-acc.png?raw=true)
 1. In your forked Github repository create new Action secret named `GDRIVE_API_CREDENTIALS` and copy the content of downloaded `.json` file from step 3 as **Value** for this secret. 
     - Now your scraper can access the spreadsheet from a Github Workflow.

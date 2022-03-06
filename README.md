@@ -21,7 +21,7 @@ Collected data needs to be stored in a database. Various types of databases can 
 - Spreadsheets (Excel, Google spreadsheet)
 - Your email inbox :)
 
-This demo will show how to use a Google spreadsheet to write rows of data each time new data is available. This solution includes additional setup as the scraper must have access to this spreadsheet in your Google Drive.
+This demo will show how to use a Google [spreadsheet](https://docs.google.com/spreadsheets/d/14-b6PRiyY4lb72n3_vqZAvFsm8ybwi4Bgnc89AX5Zz8/) to write rows of data each time new data is available. This solution includes additional setup as the scraper must have access to this spreadsheet in your Google Drive.
 
 ### Automation
 Github Workflow [file](/.github/workflows/run_scraper.yml) contains logic to execute scraper code on a schedule. It also allows manual runs [here](https://github.com/rodik/python-automated-scraper/actions/workflows/run_scraper.yml).

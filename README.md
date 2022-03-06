@@ -54,9 +54,9 @@ Start by creating a GitHub account if you don't have one.
     - Name it `Python to Sheets`
     - Rename the worksheet to `Najave`
     - If you choose different names, update the names in [scraper.py](python/scraper.py)
-1. In your `Python to Sheets` share the spreadsheet with Service Account by adding the generated email as Editor
-
+1. In your `Python to Sheets` share the spreadsheet with Service Account by adding the generated email as Editor <br>
 ![share screenshot](img/share-spreadsheet-with-service-acc.png?raw=true)
+
 1. In your forked Github repository create new Action secret named `GDRIVE_API_CREDENTIALS` and copy the content of downloaded `.json` file from step 3 as **Value** for this secret. 
     - Now your scraper can access the spreadsheet from a Github Workflow.
 
